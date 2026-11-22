@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Frontdesk{% endblock %}</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+{% load static %}<link href="{% static 'css/frontdesk.css' %}" rel="stylesheet">
+</head>
+<body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark"><div class="container-fluid">
+<a class="navbar-brand" href="{% if user.is_authenticated %}{% url 'dashboard:home' %}{% else %}{% url 'accounts:login' %}{% endif %}">Frontdesk</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+<div id="nav" class="collapse navbar-collapse"><div class="navbar-nav">
+{% if user.is_authenticated %}<a class="nav-link" href="{% url 'tickets:list' %}">Tickets</a><a class="nav-link" href="{% url 'tickets:queue' %}">Queue</a><a class="nav-link" href="{% url 'tickets:create' %}">Create</a>{% if user.can_oversee %}<a class="nav-link" href="{% url 'accounts:users' %}">Employees</a>{% endif %}<a class="nav-link" href="{% url 'accounts:profile' %}">{{ user.display_name }}</a>{% else %}<a class="nav-link" href="{% url 'customers:submit' %}">Submit request</a><a class="nav-link" href="{% url 'customers:track' %}">Track ticket</a>{% endif %}
+</div>{% if user.is_authenticated %}<form class="ms-auto" method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="btn btn-outline-light btn-sm">Logout</button></form>{% endif %}</div></div></nav>
+<main class="container page-shell py-4">{% for message in messages %}<div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>{% endfor %}{% block content %}{% endblock %}</main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body></html>
